@@ -19,13 +19,13 @@ cd VSL--Pose-Estimation
 pip install -r requirements.txt
 ```
 3) Set up the correct path for your project.
-4) (OPTIONAL) Run the following command to collect the pose data for one single sign language symbol
+4) (OPTIONAL) Run the following command to collect the pose data for one single sign language symbol. (Use python3 if you using to linux)
 ```bash
-python scripts/capture_pose_data.py --pose_name="[THE NAME OF THE ACTION]" --confidence=[THE CONFIDENCE OF THE POSE ESTIMATON MODEL (TYPICALLY 0.5)] --duration=[DATA COLLECTION PERIOD (TYPICALLY 60)]
+python3 scripts/capture_pose_data.py --pose_name="[THE NAME OF THE ACTION]" --confidence=[THE CONFIDENCE OF THE POSE ESTIMATON MODEL (TYPICALLY 0.5)] --duration=[DATA COLLECTION PERIOD (TYPICALLY 60)]
 ```
 5) (OPTIONAL) After collecting data for all the actions you want, train the model using the command
 ```bash
-python scripts/train.py --model_name=[NAME OF THE MODEL YOU WANT] 
+python3 scripts/train.py --model_name=[NAME OF THE MODEL YOU WANT] 
 ```
 6) (OPTIONAL) Replace the name of the model name in ```config.py``` with your model name 
 7) Run the Streamlit program or you want to test model using the command.
