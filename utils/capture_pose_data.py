@@ -138,7 +138,7 @@ if __name__ == "__main__":
 
 
 
-# # Thay vì mở webcam, bạn mở video từ file
+# # Thay vì mở webcam, mở video từ file
 # cap = cv2.VideoCapture('path_to_video.mp4')
 
 # # Kiểm tra nếu video mở thành công
