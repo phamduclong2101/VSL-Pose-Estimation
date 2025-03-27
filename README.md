@@ -1,4 +1,4 @@
-# Sign Language Classification Model with Pose Estimation
+# Vietnamese Sign Language Model with Pose Estimation
 
 ## About
 
