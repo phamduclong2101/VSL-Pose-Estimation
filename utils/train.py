@@ -1,62 +1,3 @@
-# import os
-# import numpy as np
-# import argparse
-# import pickle
-
-# from sklearn.svm import SVC
-# from sklearn.model_selection import train_test_split
-
-# if __name__ == "__main__":
-#     # Get the pose name from argument
-#     parser = argparse.ArgumentParser("Training model")
-
-#     # Add and parse the arguments
-#     parser.add_argument("--model_name", help="Name of the model",
-#                         type=str, default="model")
-#     parser.add_argument("--dir", help="Location of the model",
-#                         type=str, default="models")
-#     args = parser.parse_args()
-
-#     # Train X, y and mapping
-#     X, y, mapping = [], [], dict()
-
-#     # Read in the data from data folder
-#     for current_class_index, pose_file in enumerate(os.scandir("data_1")):
-#         # Load pose data
-#         file_path = f"data_1/{pose_file.name}"
-#         pose_data = np.load(file_path)
-
-#         # Add to training data
-#         X.append(pose_data)
-#         y += [current_class_index] * pose_data.shape[0]
-
-#         # Add to mapping
-#         mapping[current_class_index] = pose_file.name.split(".")[0]
-
-#     # Convert to Numpy
-#     X, y = np.vstack(X), np.array(y)
-
-#     # Create model
-#     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
-
-#     # Train the model and validate
-#     model = SVC(decision_function_shape='ovo', kernel='rbf')
-#     model.fit(X_train, y_train)
-
-#     # Get the train and test accuracy
-#     train_accuracy, test_accuracy = model.score(X_train, y_train), model.score(X_test, y_test)
-
-#     # Display the train and test accuracy
-#     print(f"Training examples: {X.shape[0]}. Num classes: {len(mapping)}")
-#     print(f"Train accuracy: {round(train_accuracy * 100, 2)}% - Test accuracy: {round(test_accuracy * 100, 2)}%")
-
-#     # Save the model to the model's folder
-#     model_path = os.path.join(f"{args.dir}", f"{args.model_name}.pkl")
-#     with open(model_path, "wb") as file:
-#         pickle.dump((model, mapping), file)
-#     print(f"Saved model to {model_path}")
-
-
 import os
 import numpy as np
 import argparse
@@ -66,7 +7,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 
-# Định nghĩa mô hình LSTM
+# LSTM Model
 class LSTMModel(nn.Module):
     def __init__(self, input_size, hidden_size, num_classes, num_layers=1):
         super(LSTMModel, self).__init__()
@@ -77,7 +18,6 @@ class LSTMModel(nn.Module):
     def forward(self, x):
         # LSTM layer
         lstm_out, (h_n, c_n) = self.lstm(x)
-        # Sử dụng đầu ra của LSTM tại bước cuối cùng
 
         if len(lstm_out.shape) == 3:
             out = self.fc(self.dropout(lstm_out[:, -1, :]))  # LSTM output at last time step
