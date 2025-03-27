@@ -41,11 +41,11 @@ streamlit run main.py
 
 ## Trained symbols
 The trained symbols of the project include:
-- Xin chào (VSL).
-- Tạm biệt (VSL).
-- Cảm ơn (VSL).
-- Yêu (VSL).
-- Tôi (VSL).
-- Bạn (VSL).
+- Xin chao (VSL).
+- Tam biet (VSL).
+- Cam on (VSL).
+- Yeu (VSL).
+- Toi (VSL).
+- Ban (VSL).
 - Do nothing.
 - ............  
