@@ -23,11 +23,11 @@ python scripts/train.py --model_name=[NAME OF THE MODEL YOU WANT]
 6) (OPTIONAL) Replace the name of the model name in ```config.py``` with your model name 
 7) Run the Streamlit program or you want to test model using the command.
    
-   Run test model:
+Run test model:
 ```
 python3 test_model.py
 ```
-  Run streamlit:
+Run streamlit:
 ```
 streamlit run main.py
 ```
