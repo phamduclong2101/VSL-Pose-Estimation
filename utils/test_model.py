@@ -5,7 +5,6 @@ import torch
 
 from PIL import Image, ImageDraw, ImageFont
 from feature_extraction import *
-from model import ASLClassificationModel
 from train import LSTMModel
 
 
@@ -34,7 +33,6 @@ if __name__ == "__main__":
 
     # Load model
     print("Initialising model ...")
-    # model = ASLClassificationModel.load_model(args.model_path)
 
     model= LSTMModel(input_size=86, hidden_size=64, num_classes=12)
     model.load_state_dict(torch.load(args.model_path))
@@ -155,7 +153,7 @@ if __name__ == "__main__":
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
         # Create window and set custom size (width x height)
-        window_name = 'VSL FOR NVISTA'
+        window_name = 'VSL FOR NVISTA' # Our project name
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
         desired_width =  920 # Set your desired window width
         desired_height = 720  # Set your desired window height
