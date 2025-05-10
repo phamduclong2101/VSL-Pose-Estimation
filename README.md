@@ -41,11 +41,11 @@ streamlit run main.py
 ## Output samples:
 <br>
 "Xin chao"
-<br> <img width="500" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m01s079.png">
+<br> <img width="1280" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m01s079.png">
 "Tam biet"
-<br> <img width="500" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m13s599.png">
+<br> <img width="1280" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m13s599.png">
 "Ten"
-<br> <img width="500" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m50s417.png">
+<br> <img width="1280" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m50s417.png">
 
 ## Trained symbols
 The trained symbols of the project include:
