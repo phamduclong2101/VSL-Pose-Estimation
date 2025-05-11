@@ -47,6 +47,9 @@ streamlit run main.py
 "Ten"
 <br> <img width="1280" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m50s417.png">
 
+[![Watch the video](assets/vlcsnap-2025-05-10-15h46m50s417.png)]([https://youtu.be/your_video_id](https://www.youtube.com/watch?v=pLRpkkfCnQ4))
+
+
 ## Trained symbols
 The trained symbols of the project include:
 - Xin chao (VSL).
