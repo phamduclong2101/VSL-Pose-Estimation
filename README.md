@@ -5,6 +5,12 @@
 This project leverages Google's MediaPipe library to perform pose estimation on a webcam feed.
 
 It then builds an LSTM model using the data from the pose estimation to classify Vietnamese sign language signals
+
+## 📽 Demo
+
+![Demo](assets/Screen-Recording-ss2025-03-28-101616-ezgif.com-video-to-gif-converter.gif)
+
+
 ## How to use the code
 
 **Note**: You can already run the project at is with the collected data and trained model, but you can collect and train a model of your own using the following steps:
@@ -46,9 +52,6 @@ streamlit run main.py
 <br> <img width="1280" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m13s599.png">
 "Ten"
 <br> <img width="1280" alt="RGB" src="assets/vlcsnap-2025-05-10-15h46m50s417.png">
-
-
-
 
 ## Trained symbols
 The trained symbols of the project include:
