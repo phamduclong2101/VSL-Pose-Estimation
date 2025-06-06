@@ -2,11 +2,12 @@ import cv2
 import mediapipe as mp
 import argparse
 import torch
+import json  # Thêm import này
 
-from utils.train import LSTMModel
-from utils.feature_extraction import *
-from utils.strings import *
-from utils.model import ASLClassificationModel
+from train import LSTMModel
+from feature_extraction import *
+from strings import *
+from model import ASLClassificationModel
 from config import MODEL_NAME, MODEL_CONFIDENCE
 
 import streamlit as st
@@ -54,10 +55,24 @@ if __name__ == "__main__":
         prediction_placeholder = st.empty()
 
     # Load model
+
+    from config import MODEL_NAME, MODEL_CONFIDENCE
     print("Initialising model ...")
     model_path = r"C:\Users\Hi Windows 11 Home\Documents\sign_recognition\Sign-Language-Classification\models"
-    model = LSTMModel(input_size=86, hidden_size=64, num_classes=12)
-    model.load_state_dict(torch.load(f"{model_path}/{MODEL_NAME}"))
+    model_file = f"{model_path}/{MODEL_NAME}"
+
+    # Sử dụng GPU nếu có
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+
+    model = LSTMModel(input_size=86, hidden_size=64, num_classes=12).to(device)
+    model.load_state_dict(torch.load(model_file, map_location=device))
+
+    # Load mapping từ file json (tự động theo model)
+    mapping_path = model_file.replace(".pth", "_mapping.json")
+    with open(mapping_path, "r", encoding="utf-8") as f:
+        mapping = json.load(f)
+    mapping = {int(k): v for k, v in mapping.items()}
 
     # Initialize MediaPipe Face Mesh
     mp_face_mesh = mp.solutions.face_mesh
@@ -78,9 +93,6 @@ if __name__ == "__main__":
 
     # Starting the application
     print("Starting application")
-
-    mapping = {0: "Ban", 1: '',2: "Cam on", 3: 'F',4: "La gi ?", 5: "P", 6: 'T',7: "Tam biet", 8: "Ten", 9: "Toi", 10: 'Xin chao', 11: 'Yeu'}
-
 
     # Set up the holistic model
     while cap.isOpened():
@@ -103,21 +115,18 @@ if __name__ == "__main__":
         # Extract feature from face and hand results
         feature = extract_features(mp_hands, face_results, hand_results)
 
-        # Convert feature to tensor and make prediction
-        feature_tensor = torch.tensor(feature, dtype=torch.float32).unsqueeze(0)  # Unsqueeze to add batch dimension
-        with torch.no_grad():  # Disable gradient calculation during inference
-            output = model(feature_tensor)  # Forward pass through the model
-            _, predicted = torch.max(output, 1)  # Get the predicted class
+        # Convert feature to tensor and make prediction (chuyển tensor sang device)
+        feature_tensor = torch.tensor(feature, dtype=torch.float32).unsqueeze(0).to(device)
+        with torch.no_grad():
+            output = model(feature_tensor)
+            _, predicted = torch.max(output, 1)
 
         # Convert predict to text
-        # expression = model.predict(feature)
         predicted_label = predicted.item()
+        predicted_text = mapping.get(predicted_label, "")
 
-        # expression = model.predict(feature)
+        # Gửi kết quả cho handler
         expression_handler.receive(predicted_label)
-
-        # Add the current expression to history
-        # st.session_state.history.append(expression_handler.get_message())
 
         # Draw the face mesh annotations on the image
         if face_results.multi_face_landmarks:
@@ -143,7 +152,7 @@ if __name__ == "__main__":
 
         # Display the image and prediction
         video_placeholder.image(image, channels="RGB", use_column_width=True)
-        prediction_placeholder.markdown(f'''<h2 class="big-font">{expression_handler.get_message()}</h2>''', unsafe_allow_html=True)
+        prediction_placeholder.markdown(f'''<h2 class="big-font">{predicted_text}</h2>''', unsafe_allow_html=True)
 
         # Press 'q' to quit
         if cv2.waitKey(5) & 0xFF == ord('q'):
