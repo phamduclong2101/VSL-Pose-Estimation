@@ -38,7 +38,7 @@ python3 scripts/train.py --model_name=[NAME OF THE MODEL YOU WANT]
    
 Run test model:
 ```bash
-python3 test_model.py
+python3 inference_model.py
 ```
 Run streamlit:
 ```bash
