@@ -1,4 +1,5 @@
 import cv2
+import json
 import mediapipe as mp
 import argparse
 import torch
@@ -12,6 +13,13 @@ from train import LSTMModel
 import warnings
 warnings.filterwarnings("ignore")
 
+# Check if CUDA is available
+if torch.cuda.is_available():
+    print("[INFO]CUDA is available. Using GPU for computations.")
+else:
+    print("[INFO]CUDA is not available. Using CPU for computations.")
+
+
 # Initialize MediaPipe Holistic
 mp_holistic = mp.solutions.holistic
 mp_drawing = mp.solutions.drawing_utils
@@ -23,7 +31,7 @@ if __name__ == "__main__":
 
     # Add and parse the arguments
     parser.add_argument("--model_path", help="Path of the ASL classification model",
-                        type=str, default=r"C:\Users\Hi Windows 11 Home\Documents\sign_recognition\Sign-Language-Classification\models\vsl(12).pth")
+                        type=str, default=r"C:\Users\Hi Windows 11 Home\Documents\sign_recognition\Sign-Language-Classification\models\vsl(12.1).pth")
     parser.add_argument("--confidence", help="Confidence of the model",
                         type=float, default=0.6)
     args = parser.parse_args()
@@ -32,11 +40,14 @@ if __name__ == "__main__":
     cap = cv2.VideoCapture(0)
 
     # Load model
-    print("Initialising model ...")
+    print("[INFO]Initialising model ...")
 
-    model= LSTMModel(input_size=86, hidden_size=64, num_classes=12)
-    model.load_state_dict(torch.load(args.model_path))
-    model.eval
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"[INFO]Using device: {device}")
+
+    model= LSTMModel(input_size=86, hidden_size=64, num_classes=12).to(device)  # Initialize the model and move it to the device
+    model.load_state_dict(torch.load(args.model_path, map_location=device))  # Load the model state dict
+    model.eval()
 
     # Initialize MediaPipe Face Mesh
     mp_face_mesh = mp.solutions.face_mesh
@@ -59,10 +70,15 @@ if __name__ == "__main__":
     print("Starting application")
 
 
-    # Mapping index to label
-    # mapping = {0: "Ban", 1: '', 2: 'F',3: "La gi ?", 4: "P", 5: 'T',6: "Tam biet", 7: "Ten", 8: "Toi", 9: 'Xin chao', 10: 'Yeu'}
-    mapping = {0: "Ban", 1: '',2: "Cam on", 3: 'F',4: "La gi ?", 5: "P", 6: 'T',7: "Tam biet", 8: "Ten", 9: "Toi", 10: 'Xin chao', 11: 'Yeu'}
-    # mapping = {0: "Ban", 1: 'None', 2: 'La gi ?', 3: 'Ten'}
+
+
+    # Load the mapping from JSON file
+    print("[INFO]Loading mapping from JSON file...")
+    mapping_path = args.model_path.replace(".pth", "_mapping.json")
+    with open(mapping_path, "r", encoding="utf-8") as f:
+        mapping = json.load(f)
+    # Đảm bảo key là int nếu cần
+    mapping = {int(k): v for k, v in mapping.items()}
 
 
     # Set up the holistic model
@@ -87,7 +103,7 @@ if __name__ == "__main__":
         feature = extract_features(mp_hands, face_results, hand_results)
 
         # Convert feature to tensor and make prediction
-        feature_tensor = torch.tensor(feature, dtype=torch.float32).unsqueeze(0)  # Unsqueeze to add batch dimension
+        feature_tensor = torch.tensor(feature, dtype=torch.float32).unsqueeze(0).to(device)  # Unsqueeze to add batch dimension
         with torch.no_grad():  # Disable gradient calculation during inference
             output = model(feature_tensor)  # Forward pass through the model
             _, predicted = torch.max(output, 1)  # Get the predicted class
